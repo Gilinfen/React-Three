@@ -12,8 +12,8 @@ import { CreateDOM } from '../../utils'
 export default function index() {
   // 创建一个场景
   const scene = new Scene()
-  const width = 1200
-  const height = 900
+  const width = 1190
+  const height = 890
 
   // 创建相机对象
   const camera = new PerspectiveCamera(75, width / height, 0.1, 1000)

@@ -1,3 +1,4 @@
+```jsx
 import React, { useEffect } from 'react'
 import {
   PerspectiveCamera,
@@ -49,3 +50,4 @@ export default function index() {
   renderer.render(scene, camera)
   return <></>
 }
+```
