@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { Select } from 'antd'
 import ReactMarkdown from 'react-markdown'
 import SyntaxHighlighter from 'react-syntax-highlighter'
-import MD from './Doc/three_1.md'
 import { STYKES } from '../utils/Style_h1js.js'
 import './index.scss'
+import { useLocation } from 'react-router-dom'
 const { Option } = Select
 export default function MarKdown() {
   const [MDState, SetMDState] = useState('')
   const [Style, SetStyle] = useState(STYKES['tomorrowNightBright'])
+  const data = useLocation()
 
   // 推荐主题
   const recommended = [
@@ -25,7 +26,7 @@ export default function MarKdown() {
 
   // 获取MD文件
   useEffect(() => {
-    fetch(MD)
+    fetch(data.state)
       .then(res => res.text())
       .then(text => SetMDState(text))
   }, [])
@@ -60,7 +61,9 @@ export default function MarKdown() {
             onChange={value => SetStyle(STYKES[value])}
           >
             {Object.keys(STYKES).map(v => (
-              <Option value={v}>{v}</Option>
+              <Option key={v} value={v}>
+                {v}
+              </Option>
             ))}
           </Select>
           <Select
@@ -69,7 +72,9 @@ export default function MarKdown() {
             onChange={value => SetStyle(STYKES[value])}
           >
             {recommended.map(v => (
-              <Option value={v}>{v}</Option>
+              <Option key={v} value={v}>
+                {v}
+              </Option>
             ))}
           </Select>
         </div>

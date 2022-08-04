@@ -1,10 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { lazy } from 'react'
+import React, { Suspense } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { List } from 'antd'
-import Three1 from '../Page/1-Three'
-import Three2 from '../Page/2-Three'
-import Doc from '../MarKdown'
 import routes from './routes'
 
 export default function index() {
@@ -16,6 +13,7 @@ export default function index() {
           className="List"
           itemLayout="horizontal"
           dataSource={routes}
+          rowKey="path"
           renderItem={item => (
             <List.Item>
               <List.Item.Meta
@@ -28,6 +26,9 @@ export default function index() {
                 style={{
                   marginBottom: '4px'
                 }}
+                onClick={() => {
+                  navigate(item.code.path, { state: item.code.doc })
+                }}
               >
                 源码
               </span>
@@ -36,22 +37,26 @@ export default function index() {
         />
       </div>
       <div id="Box">
-        <Routes>
-          {routes.map(item => {
-            // const Three = lazy(() => import(item.component))
-            // console.log(<Three />);
-            return (
-              <Route
-                key={item.path}
-                path={item.path}
-                element={<item.component />}
-              ></Route>
-            )
-          })}
-          {/* <Route path="/three_1" element={<Three1 />}></Route>
-          <Route path="/three_2" element={<Three2 />}></Route>
-          <Route path="/doc_1" element={<Doc />}></Route> */}
-        </Routes>
+        <Suspense>
+          <Routes>
+            {routes.map(item => {
+              return (
+                <>
+                  <Route
+                    key={item.path}
+                    path={item.path}
+                    element={<item.component />}
+                  ></Route>
+                  <Route
+                    key={item.code.path}
+                    path={item.code.path}
+                    element={<item.code.component />}
+                  ></Route>
+                </>
+              )
+            })}
+          </Routes>
+        </Suspense>
       </div>
     </>
   )
