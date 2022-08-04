@@ -7,13 +7,13 @@ import {
   Mesh,
   Scene
 } from 'three'
-import { CreateDOM } from '../../utis'
+import { CreateDOM } from '../../utils'
 
 export default function index() {
   // 创建一个场景
   const scene = new Scene()
-  const width = window.innerWidth
-  const height = window.innerHeight
+  const width = 1200
+  const height = 900
 
   // 创建相机对象
   const camera = new PerspectiveCamera(75, width / height, 0.1, 1000)
