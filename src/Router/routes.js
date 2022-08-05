@@ -16,7 +16,7 @@ export default [
     }
   },
   {
-    title: 'Three场景与相机',
+    title: 'Three控制器',
     path: '/three_2',
     component: lazy(() => import('../Page/2-Three')),
     code: {

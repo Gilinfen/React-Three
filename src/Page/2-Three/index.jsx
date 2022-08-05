@@ -7,6 +7,8 @@ import {
   Mesh,
   Scene
 } from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+
 import { CreateDOM } from '../../utils'
 
 export default function index() {
@@ -41,7 +43,19 @@ export default function index() {
     const DOM = CreateDOM(renderer.domElement)
 
     // 使用渲染器、通过相机来渲染场景
-    renderer.render(scene, camera)
+    // renderer.render(scene, camera)
+
+    // 创建轨道控制器
+    const controls = new OrbitControls(camera, renderer.domElement)
+
+    // 利用动画函数不停的渲染页面
+    function render() {
+      renderer.render(scene, camera)
+      // 渲染下一针的时候就会重新调用
+      requestAnimationFrame(render)
+    }
+    render()
+
     return () => {
       document.querySelector('#Box')?.removeChild(DOM)
     }
