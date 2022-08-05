@@ -12,6 +12,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { CreateDOM } from '../../utils'
 
+import { gsap } from 'gsap'
+
 export default function index() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -34,12 +36,6 @@ export default function index() {
     const cube = new Mesh(geometry, material)
     // 添加几何物体
     scene.add(cube)
-    // 修改物体位置
-    // cube.position.x = 5
-    // 缩放
-    // cube.scale.set(1, 2, 3)
-    // 旋转
-    // cube.rotation.set(Math.PI / 4, 0, 0, 'XZY')
 
     // 初始化渲染器
     const renderer = new WebGLRenderer()
@@ -59,21 +55,40 @@ export default function index() {
     const axesHelper = new AxesHelper(5)
     scene.add(axesHelper)
 
-    // 利用动画函数不停的渲染页面
-    let falg = true
-    function render() {
-      cube.rotation.x += 0.01
-      if (cube.position.x > 5) {
-        falg = false
-      } else if (cube.position.x < 0) {
-        falg = true
+    // gsap 动画 https://greensock.com/get-started/
+    // 暂停动画函数
+    // adimatel.pause()
+    // 判断是否是暂停状态函数
+    // adimatel.isActive()
+    // 恢复函数
+    // adimatel.resume()
+    const adimatel = gsap.to(cube.position, {
+      x: 5, // 动画运动长度距离
+      direction: 15, // 动画运动时间
+      ease: 'pover.inOut', // 运动速度
+      repeat: 2, // 重复次数，无限重复为 -1
+      yoyo: true, // 往返运动
+      delay: 2, //开始时延迟时间
+      onComplete() {
+        //动画完成回调
+        console.log('动画完成')
+      },
+      onStart() {
+        // 开始回调
+        console.log('动画开始')
       }
-      if (falg) {
-        cube.position.x += 0.01
-      } else {
-        cube.position.x -= 0.01
-      }
+    })
+    gsap.to(cube.rotation, {
+      x: 2 * Math.PI,
+      direction: 15,
+      ease: 'pover.inOut',
+      repeat: 2, // 重复次数，无限重复为 -1
+      yoyo: true, // 往返运动
+      delay: 2 //开始时延迟时间
+    })
 
+    // 利用动画函数不停的渲染页面
+    function render() {
       renderer.render(scene, camera)
       // 渲染下一针的时候就会重新调用
       requestAnimationFrame(render)
@@ -82,7 +97,6 @@ export default function index() {
 
     return () => {
       document.querySelector('#Box')?.removeChild(DOM)
-      falg = null
     }
   }, [])
   return <></>
