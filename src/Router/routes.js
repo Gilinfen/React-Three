@@ -1,6 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { lazy } from 'react'
-import three_1 from '../MarKdown/Doc/three_1.md'
+import three_1 from '../Docs/1-three.md'
+import three_2 from '../Docs/2-three.md'
 
 export default [
   {
@@ -9,8 +10,8 @@ export default [
     component: lazy(() => import('../Page/1-Three')),
     code: {
       path: '/three_1/doc_1',
-      doc:three_1,
-      component: lazy(() => import('../MarKdown')),
+      doc: three_1,
+      component: lazy(() => import('../MarKdown'))
     }
   },
   {
@@ -19,8 +20,8 @@ export default [
     component: lazy(() => import('../Page/2-Three')),
     code: {
       path: '/three_2/doc_1',
-      doc:three_1,
-      component: lazy(() => import('../MarKdown')),
+      doc: three_2,
+      component: lazy(() => import('../MarKdown'))
     }
   }
 ]
