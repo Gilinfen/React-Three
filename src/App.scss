@@ -3,13 +3,13 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 15px;
-  filter: drop-shadow(0 0 0.75rem #333);
+  padding-top: 50px;
+  filter: drop-shadow(0 0 1rem #454545);
 
   #Box {
     width: 1200px;
     height: 900px;
-    background-color: #333;
+    background-color: #000000;
     border: solid 5px #272727;
     overflow: auto;
   }

@@ -29,7 +29,7 @@ export default function MarKdown() {
     fetch(data.state)
       .then(res => res.text())
       .then(text => SetMDState(text))
-  }, [])
+  }, [data.state])
 
   const components = {
     // 代码高亮
@@ -52,7 +52,7 @@ export default function MarKdown() {
     }
   }
   return (
-    <div id="root">
+    <div id="Mdroot">
       {false && (
         <div id="box">
           <Select

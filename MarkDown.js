@@ -7,9 +7,9 @@ fs.mkdir(path.resolve(__dirname, './src/Docs'), err => err)
   const globalPath = path.resolve(__dirname, './src/Page')
   const arr = fs.readdirSync(globalPath)
   arr.map(item => {
-    const pathUrl = globalPath + `\\${item}`
+    const pathUrl = globalPath + `/${item}`
     const urlArr = fs.readdirSync(pathUrl)
-    const text = fs.readFileSync(pathUrl + `\\${urlArr[0]}`, 'utf-8')
+    const text = fs.readFileSync(pathUrl + `/${urlArr[0]}`, 'utf-8')
     const itemStr = item.split('-')
     // 创建文件
     fs.writeFileSync(
