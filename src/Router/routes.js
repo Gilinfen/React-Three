@@ -16,11 +16,21 @@ export default [
     }
   },
   {
-    title: 'Three控制器',
+    title: 'Three控制器与坐标轴',
     path: '/three_2',
     component: lazy(() => import('../Page/2-Three')),
     code: {
       path: '/three_2/doc_2',
+      doc: three_2,
+      component: lazy(() => import('../MarKdown'))
+    }
+  },
+  {
+    title: 'Three三d物体移动',
+    path: '/three_3',
+    component: lazy(() => import('../Page/3-Three')),
+    code: {
+      path: '/three_3/doc_3',
       doc: three_2,
       component: lazy(() => import('../MarKdown'))
     }
