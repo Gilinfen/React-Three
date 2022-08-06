@@ -106,7 +106,6 @@ export default function index() {
       const BOX = document.querySelector('#Box').getBoundingClientRect()
       const width = BOX.width - 10
       const height = BOX.height - 10
-      console.log(height)
       // 更新摄像头
       camera.aspect = width / height
       // 更新摄像机的投影矩阵
@@ -122,7 +121,6 @@ export default function index() {
       window.removeEventListener('resize', resizeFun)
       const Element = document.querySelector('#Three')
       Element?.parentElement.removeChild(Element)
-      console.log(11)
       // 组件销毁则暂停动画
       if (adimatel.isActive()) adimatel.pause()
     }
