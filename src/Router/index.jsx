@@ -43,6 +43,8 @@ export default function index() {
         <div
           style={{
             position: 'absolute',
+            zIndex: 999,
+            cursor: 'pointer',
             top: '10px',
             right: '10px'
           }}

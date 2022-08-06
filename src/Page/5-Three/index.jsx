@@ -113,7 +113,7 @@ export default function index() {
       // 更新渲染器
       renderer.setSize(width, height)
       // 设置相机渲染的像素比
-      renderer.setPixelRatio(2)
+      renderer.setPixelRatio(window.devicePixelRatio)
     }
     window.addEventListener('resize', resizeFun)
 
