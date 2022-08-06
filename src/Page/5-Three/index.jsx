@@ -17,10 +17,13 @@ import { gsap } from 'gsap'
 export default function index() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
+    // 获取容器大小
+    const BOX = document.querySelector('#Box').getBoundingClientRect()
+
     // 创建一个场景
     const scene = new Scene()
-    const width = 1190
-    const height = 890
+    const width = BOX.width - 10
+    const height = BOX.height - 10
 
     // 创建相机对象
     const camera = new PerspectiveCamera(75, width / height, 0.1, 1000)
@@ -50,6 +53,8 @@ export default function index() {
 
     // 创建轨道控制器
     const controls = new OrbitControls(camera, renderer.domElement)
+    // 设置控制器的阻尼（惯性）必须在你的动画循环里调用.update()
+    controls.enableDamping = true
 
     // 添加坐标轴
     const axesHelper = new AxesHelper(5)
@@ -89,15 +94,35 @@ export default function index() {
 
     // 利用动画函数不停的渲染页面
     function render() {
+      controls.update()
       renderer.render(scene, camera)
       // 渲染下一针的时候就会重新调用
       requestAnimationFrame(render)
     }
     render()
 
+    // 检测页面大小,更新渲染画面
+    const resizeFun = () => {
+      const BOX = document.querySelector('#Box').getBoundingClientRect()
+      const width = BOX.width - 10
+      const height = BOX.height - 10
+      console.log(height)
+      // 更新摄像头
+      camera.aspect = width / height
+      // 更新摄像机的投影矩阵
+      camera.updateProjectionMatrix()
+      // 更新渲染器
+      renderer.setSize(width, height)
+      // 设置相机渲染的像素比
+      renderer.setPixelRatio(2)
+    }
+    window.addEventListener('resize', resizeFun)
+
     return () => {
+      window.removeEventListener('resize', resizeFun)
       const Element = document.querySelector('#Three')
       Element?.parentElement.removeChild(Element)
+      console.log(11)
       // 组件销毁则暂停动画
       if (adimatel.isActive()) adimatel.pause()
     }

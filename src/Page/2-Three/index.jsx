@@ -41,7 +41,7 @@ export default function index() {
     // 设置渲染尺寸大小
     renderer.setSize(width, height)
     // 添加到页面中
-    const DOM = CreateDOM(renderer.domElement)
+    CreateDOM(renderer.domElement)
 
     // 使用渲染器、通过相机来渲染场景
     // renderer.render(scene, camera)
@@ -62,7 +62,8 @@ export default function index() {
     render()
 
     return () => {
-      document.querySelector('#Box')?.removeChild(DOM)
+      const Element = document.querySelector('#Three')
+      Element?.parentElement.removeChild(Element)
     }
   }, [])
   return <></>

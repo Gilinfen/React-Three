@@ -41,18 +41,13 @@ export default function index() {
           <Routes>
             {routes.map(item => {
               return (
-                <>
+                <Route key={item.path}>
+                  <Route path={item.path} element={<item.component />}></Route>
                   <Route
-                    key={item.path}
-                    path={item.path}
-                    element={<item.component />}
-                  ></Route>
-                  <Route
-                    key={item.code.path}
                     path={item.code.path}
                     element={<item.code.component />}
                   ></Route>
-                </>
+                </Route>
               )
             })}
           </Routes>
