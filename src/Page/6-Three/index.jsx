@@ -6,7 +6,14 @@ import {
   MeshBasicMaterial,
   Mesh,
   Scene,
-  AxesHelper
+  AxesHelper,
+  TextureLoader,
+  RepeatWrapping,
+  MirroredRepeatWrapping,
+  NearestFilter,
+  DoubleSide,
+  PlaneBufferGeometry,
+  BufferAttribute
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
@@ -32,14 +39,63 @@ export default function index() {
     camera.position.set(0, 0, 10)
     scene.add(camera)
 
+    // 导入纹理
+    // https://threejs.org/docs/index.html?q=texture#api/zh/textures/Texture
+    const cubeGeometry = new TextureLoader()
+    const cubeMaterial = cubeGeometry.load(require('../../assets/R.jpeg'))
+    const cubeAlphaMap = cubeGeometry.load(require('../../assets/RH.jpg'))
+    const cubeAoMap = cubeGeometry.load(require('../../assets/RF.jpg'))
+
+    // 材质属性
+    // https://threejs.org/docs/index.html?q=texture#api/zh/constants/Textures
+    // 偏移
+    // cubeMaterial.repeat.set(0.5, 0.5)
+    // 旋转
+    // cubeMaterial.center.set(0.5, 0.5)
+    // cubeMaterial.center.position = Math.PI / 4
+    // 重复 需要定义水平垂直重复方式
+    // cubeMaterial.repeat.set(2, 1)
+    // 水平重复方式
+    // cubeMaterial.wrapS = RepeatWrapping
+    // 垂直重复方式
+    // cubeMaterial.wrapT = MirroredRepeatWrapping
+
+    // 纹理显示设置
+    // 当一个纹素覆盖大于一个像素时，贴图将如何采样
+    // cubeMaterial.magFilter = NearestFilter
+    // cubeMaterial.minFilter = NearestFilter
+
     // 添加物体
-    const geometry = new BoxGeometry(1, 1, 1)
+    const geometry = new BoxGeometry(2, 2, 2)
     // 材质
-    const material = new MeshBasicMaterial({ color: 0x00ff00 })
+    // https://threejs.org/docs/index.html#api/zh/materials/MeshBasicMaterial
+    const material = new MeshBasicMaterial({
+      map: cubeMaterial,
+      // 定义此材质是否透明
+      // https://threejs.org/docs/index.html?q=MeshBasicMaterial#api/zh/materials/Material.transparent
+      transparent: true,
+      // alphaMap 的材质是一个灰度图，图中量的区域表示显示，暗的区域表示透明
+      alphaMap: cubeAlphaMap,
+      // aoMap 该纹理的红色通道用作环境遮挡贴图。默认值为null。aoMap需要第二组UV。
+      aoMap: cubeAoMap,
+      // aoMap的强度
+      aoMapIntensity: 1,
+      // 渲染那一面
+      side: DoubleSide
+      // opacity: 0.5
+    })
     // 给几何物体添加材质
     const cube = new Mesh(geometry, material)
     // 添加几何物体
     scene.add(cube)
+
+    // 添加平面
+    const planeGeometry = new PlaneBufferGeometry(1, 1)
+    const plane = new Mesh(planeGeometry, material)
+    plane.position.set(3, 0, 0)
+    scene.add(plane)
+    // 给平面设置第二组 uv
+    // planeGeometry.setAttribute('uv2',new BufferAttribute(planeGeometry.attributes.uv.array,2))
 
     // 初始化渲染器
     const renderer = new WebGLRenderer()
@@ -60,38 +116,6 @@ export default function index() {
     // 添加坐标轴
     const axesHelper = new AxesHelper(5)
     scene.add(axesHelper)
-
-    // gsap 动画 https://greensock.com/get-started/
-    // 暂停动画函数
-    // adimatel.pause()
-    // 判断是否是暂停状态函数
-    // adimatel.isActive()
-    // 恢复函数
-    // adimatel.resume()
-    const adimatel = gsap.to(cube.position, {
-      x: 5, // 动画运动长度距离
-      direction: 15, // 动画运动时间
-      ease: 'pover.inOut', // 运动速度
-      repeat: 2, // 重复次数，无限重复为 -1
-      yoyo: true, // 往返运动
-      delay: 2, //开始时延迟时间
-      onComplete() {
-        //动画完成回调
-        console.log('动画完成')
-      },
-      onStart() {
-        // 开始回调
-        console.log('动画开始')
-      }
-    })
-    gsap.to(cube.rotation, {
-      x: 2 * Math.PI,
-      direction: 15,
-      ease: 'pover.inOut',
-      repeat: 2, // 重复次数，无限重复为 -1
-      yoyo: true, // 往返运动
-      delay: 2 //开始时延迟时间
-    })
 
     // 利用动画函数不停的渲染页面
     function render() {
@@ -122,8 +146,6 @@ export default function index() {
       window.removeEventListener('resize', resizeFun)
       const Element = document.querySelector('#Three')
       Element?.parentElement.removeChild(Element)
-      // 组件销毁则暂停动画
-      if (adimatel.isActive()) adimatel.pause()
     }
   }, [])
   return <></>
