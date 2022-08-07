@@ -13,7 +13,10 @@ import {
   NearestFilter,
   DoubleSide,
   PlaneBufferGeometry,
-  BufferAttribute
+  BufferAttribute,
+  MeshStandardMaterial,
+  AmbientLight,
+  DirectionalLight
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
@@ -47,7 +50,6 @@ export default function index() {
     const cubeAoMap = cubeGeometry.load(
       require('../../assets/ambientOcclusion.jpg')
     )
-    const minecraft = cubeGeometry.load(require('../../assets/minecraft.png'))
 
     // 材质属性
     // https://threejs.org/docs/index.html?q=texture#api/zh/constants/Textures
@@ -65,23 +67,14 @@ export default function index() {
 
     // 纹理显示设置
     // 当一个纹素覆盖大于一个像素时，贴图将如何采样
-    minecraft.magFilter = NearestFilter
-    minecraft.minFilter = NearestFilter
-
-    // 添加我的世界方块
-    const MCGeometry = new BoxGeometry(1, 1, 1)
-    const MCmaterial = new MeshBasicMaterial({
-      map: minecraft
-    })
-    const cubeMC = new Mesh(MCGeometry, MCmaterial)
-    cubeMC.position.set(-3, 0, 0)
-    scene.add(cubeMC)
+    // cubeMaterial.magFilter = NearestFilter
+    // cubeMaterial.minFilter = NearestFilter
 
     // 添加物体
     const geometry = new BoxGeometry(2, 2, 2)
-    // 基础网格材质
-    // https://threejs.org/docs/index.html#api/zh/materials/MeshBasicMaterial
-    const material = new MeshBasicMaterial({
+    // 标准网格材质
+    // https://threejs.org/docs/index.html?q=MeshSt#api/zh/materials/MeshStandardMaterial
+    const material = new MeshStandardMaterial({
       color: '#ffee00',
       map: cubeMaterial,
       // 定义此材质是否透明
@@ -117,6 +110,17 @@ export default function index() {
       'uv2',
       new BufferAttribute(planeGeometry.attributes.uv.array, 2)
     )
+
+    // 灯光
+    // 环境光
+    // https://threejs.org/docs/index.html?q=Amb#api/zh/lights/AmbientLight
+    const light = new AmbientLight('#ffffff', 0.5)
+    scene.add(light)
+    // 平行光
+    // https://threejs.org/docs/index.html?q=light#api/zh/lights/DirectionalLight
+    const directionalLight = new DirectionalLight(0xffffff, 0.5)
+    directionalLight.position.set(0, 10, 10)
+    scene.add(directionalLight)
 
     // 初始化渲染器
     const renderer = new WebGLRenderer()

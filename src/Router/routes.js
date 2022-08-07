@@ -9,6 +9,7 @@ const three_3 = require('../Docs/Three_3.md')
 const three_4 = require('../Docs/Three_4.md')
 const three_5 = require('../Docs/Three_5.md')
 const three_6 = require('../Docs/Three_6.md')
+const three_7 = require('../Docs/Three_7.md')
 
 const obj = [
   {
@@ -68,6 +69,16 @@ const obj = [
     code: {
       path: '/three_6/doc_6',
       doc: three_6,
+      component: MarKdown
+    }
+  },
+  {
+    title: 'Three 灯光',
+    path: '/three_7',
+    component: lazy(() => import('../Page/7-Three')),
+    code: {
+      path: '/three_7/doc_7',
+      doc: three_7,
       component: MarKdown
     }
   }

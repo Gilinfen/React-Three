@@ -14,7 +14,8 @@ fs.mkdir(path.resolve(__dirname, './src/Docs'), err => err)
     // 创建文件
     fs.writeFileSync(
       path.resolve(__dirname, `./src/Docs/${itemStr[1]}_${itemStr[0]}.md`),
-      '```jsx\n' + text + '```',
+      // '```jsx\n' + text + '```',
+      text,
       'utf8'
     )
   })
