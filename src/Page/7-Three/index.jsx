@@ -55,6 +55,16 @@ export default function index() {
     const doorHeightTexture = cubeGeometry.load(
       require('../../assets/height.jpg')
     )
+    // 导入粗糙度贴图
+    const roughnessTexture = cubeGeometry.load(
+      require('../../assets/roughness.jpg')
+    )
+    // 导入金属贴图
+    const metalnessTexture = cubeGeometry.load(
+      require('../../assets/metalness.jpg')
+    )
+    // 导入法线贴图
+    const normalTexture = cubeGeometry.load(require('../../assets/normal.jpg'))
 
     // 材质属性
     // https://threejs.org/docs/index.html?q=texture#api/zh/constants/Textures
@@ -98,7 +108,21 @@ export default function index() {
       // 置换贴图（位移贴图）
       // https://threejs.org/docs/index.html?q=dis#api/zh/materials/MeshDistanceMaterial.displacementMap
       displacementMap: doorHeightTexture,
-      displacementScale: 0.1
+      // 位移贴图对网格的影响程度
+      displacementScale: 0.1,
+      // 粗糙度
+      // https://threejs.org/docs/index.html?q=MeshS#api/zh/materials/MeshStandardMaterial.roughness
+      roughness: 1,
+      // 粗糙度贴图
+      roughnessMap: roughnessTexture,
+      // https://threejs.org/docs/index.html?q=MeshS#api/zh/materials/MeshStandardMaterial.metalness
+      // 金属度
+      metalness: 1,
+      //  金属度贴图
+      metalnessMap: metalnessTexture,
+      // 法线特贴图
+      // https://threejs.org/docs/index.html?q=MeshS#api/zh/materials/MeshStandardMaterial.normalMap
+      normalMap: normalTexture
     })
     // 给几何物体添加材质
     const cube = new Mesh(geometry, material)
