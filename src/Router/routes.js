@@ -73,7 +73,7 @@ const obj = [
     }
   },
   {
-    title: 'Three 灯光',
+    title: 'Three 灯光与置换贴图',
     path: '/three_7',
     component: lazy(() => import('../Page/7-Three')),
     code: {

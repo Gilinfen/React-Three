@@ -42,7 +42,8 @@ export default function index() {
       <div id="Box" ref={BoxRef}>
         <div
           style={{
-            position: 'absolute',
+            position: 'sticky',
+            float: 'right',
             zIndex: 999,
             cursor: 'pointer',
             top: '10px',

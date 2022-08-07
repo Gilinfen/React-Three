@@ -51,6 +51,11 @@ export default function index() {
       require('../../assets/ambientOcclusion.jpg')
     )
 
+    // 导入置换贴图（位移贴图）
+    const doorHeightTexture = cubeGeometry.load(
+      require('../../assets/height.jpg')
+    )
+
     // 材质属性
     // https://threejs.org/docs/index.html?q=texture#api/zh/constants/Textures
     // 偏移
@@ -71,7 +76,7 @@ export default function index() {
     // cubeMaterial.minFilter = NearestFilter
 
     // 添加物体
-    const geometry = new BoxGeometry(2, 2, 2)
+    const geometry = new BoxGeometry(2, 2, 2, 200, 200, 200)
     // 标准网格材质
     // https://threejs.org/docs/index.html?q=MeshSt#api/zh/materials/MeshStandardMaterial
     const material = new MeshStandardMaterial({
@@ -87,8 +92,13 @@ export default function index() {
       // aoMap的强度
       aoMapIntensity: 1,
       // 渲染那一面
-      side: DoubleSide
+      side: DoubleSide,
+      // 透明度 需要开启 transparent
       // opacity: 0.5
+      // 置换贴图（位移贴图）
+      // https://threejs.org/docs/index.html?q=dis#api/zh/materials/MeshDistanceMaterial.displacementMap
+      displacementMap: doorHeightTexture,
+      displacementScale: 0.1
     })
     // 给几何物体添加材质
     const cube = new Mesh(geometry, material)
@@ -101,7 +111,7 @@ export default function index() {
     )
 
     // 添加平面
-    const planeGeometry = new PlaneBufferGeometry(1, 1)
+    const planeGeometry = new PlaneBufferGeometry(1, 1, 200, 200)
     const plane = new Mesh(planeGeometry, material)
     plane.position.set(3, 0, 0)
     scene.add(plane)
