@@ -2,14 +2,6 @@
 import { lazy } from 'react'
 
 const MarKdown = lazy(() => import('../MarKdown'))
-// 这里不能用 import 来导入，因为 Docs 里的文件是动态生成的，编译阶段还没有这些文件
-const three_1 = require('../Docs/Three_1.md')
-const three_2 = require('../Docs/Three_2.md')
-const three_3 = require('../Docs/Three_3.md')
-const three_4 = require('../Docs/Three_4.md')
-const three_5 = require('../Docs/Three_5.md')
-const three_6 = require('../Docs/Three_6.md')
-const three_7 = require('../Docs/Three_7.md')
 
 const obj = [
   {
@@ -18,7 +10,7 @@ const obj = [
     component: lazy(() => import('../Page/1-Three')),
     code: {
       path: '/three_1/doc_1',
-      doc: three_1,
+      doc: require('../Docs/Three_1.md'),
       component: MarKdown
     }
   },
@@ -28,7 +20,7 @@ const obj = [
     component: lazy(() => import('../Page/2-Three')),
     code: {
       path: '/three_2/doc_2',
-      doc: three_2,
+      doc: require('../Docs/Three_2.md'),
       component: MarKdown
     }
   },
@@ -38,7 +30,7 @@ const obj = [
     component: lazy(() => import('../Page/3-Three')),
     code: {
       path: '/three_3/doc_3',
-      doc: three_3,
+      doc: require('../Docs/Three_3.md'),
       component: MarKdown
     }
   },
@@ -48,7 +40,7 @@ const obj = [
     component: lazy(() => import('../Page/4-Three')),
     code: {
       path: '/three_4/doc_4',
-      doc: three_4,
+      doc: require('../Docs/Three_4.md'),
       component: MarKdown
     }
   },
@@ -58,7 +50,7 @@ const obj = [
     component: lazy(() => import('../Page/5-Three')),
     code: {
       path: '/three_5/doc_5',
-      doc: three_5,
+      doc: require('../Docs/Three_5.md'),
       component: MarKdown
     }
   },
@@ -68,7 +60,7 @@ const obj = [
     component: lazy(() => import('../Page/6-Three')),
     code: {
       path: '/three_6/doc_6',
-      doc: three_6,
+      doc: require('../Docs/Three_6.md'),
       component: MarKdown
     }
   },
@@ -78,7 +70,17 @@ const obj = [
     component: lazy(() => import('../Page/7-Three')),
     code: {
       path: '/three_7/doc_7',
-      doc: three_7,
+      doc: require('../Docs/Three_7.md'),
+      component: MarKdown
+    }
+  },
+  {
+    title: 'Three 资源加载进度',
+    path: '/three_8',
+    component: lazy(() => import('../Page/8-Three')),
+    code: {
+      path: '/three_8/doc_8',
+      doc: require('../Docs/Three_8.md'),
       component: MarKdown
     }
   }

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect } from 'react'
 import {
   PerspectiveCamera,
@@ -13,14 +14,21 @@ import {
   NearestFilter,
   DoubleSide,
   PlaneBufferGeometry,
-  BufferAttribute
+  BufferAttribute,
+  MeshStandardMaterial,
+  AmbientLight,
+  DirectionalLight,
+  LoadingManager
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { useDispatch} from 'react-redux'
 
 import { CreateDOM, resizeChangeFun } from '../../utils'
+import { PROGRESS } from '../../Redux/store/actions'
 
 export default function index() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const dispatch = useDispatch()
+
   useEffect(() => {
     // 获取容器大小
     const BOX = document.querySelector('#Box').getBoundingClientRect()
@@ -37,15 +45,56 @@ export default function index() {
     camera.position.set(0, 0, 10)
     scene.add(camera)
 
+    // 设置纹理管理加载器
+    // https://threejs.org/docs/index.html?q=Loadingm#api/zh/loaders/managers/LoadingManager
+    const enent = {
+      onLoad() {
+        console.log('加载完成')
+      },
+      onProgress(url, itemsLoaded, itemsTotal) {
+        // console.log(url)
+        // console.log(itemsLoaded)
+        // console.log(itemsTotal)
+        dispatch(PROGRESS({
+          itemsLoaded,
+          itemsTotal
+        }))
+        // console.log('加载中')
+      },
+      onError(url) {
+        console.log(url)
+        console.log('加载失败')
+      }
+    }
+    const loadingMarnger = new LoadingManager(
+      enent.onLoad,
+      enent.onProgress,
+      enent.onError
+    )
+
     // 导入纹理
     // https://threejs.org/docs/index.html?q=texture#api/zh/textures/Texture
-    const textureloader = new TextureLoader()
+    const textureloader = new TextureLoader(loadingMarnger)
     const cubeMaterial = textureloader.load(require('../../assets/color.jpg'))
     const cubeAlphaMap = textureloader.load(require('../../assets/alpha.jpg'))
     const cubeAoMap = textureloader.load(
       require('../../assets/ambientOcclusion.jpg')
     )
-    const minecraft = textureloader.load(require('../../assets/minecraft.png'))
+
+    // 导入置换贴图（位移贴图）
+    const doorHeightTexture = textureloader.load(
+      require('../../assets/height.jpg')
+    )
+    // 导入粗糙度贴图
+    const roughnessTexture = textureloader.load(
+      require('../../assets/roughness.jpg')
+    )
+    // 导入金属贴图
+    const metalnessTexture = textureloader.load(
+      require('../../assets/metalness.jpg')
+    )
+    // 导入法线贴图
+    const normalTexture = textureloader.load(require('../../assets/normal.jpg'))
 
     // 材质属性
     // https://threejs.org/docs/index.html?q=texture#api/zh/constants/Textures
@@ -63,23 +112,14 @@ export default function index() {
 
     // 纹理显示设置
     // 当一个纹素覆盖大于一个像素时，贴图将如何采样
-    minecraft.magFilter = NearestFilter
-    minecraft.minFilter = NearestFilter
-
-    // 添加我的世界方块
-    const MCGeometry = new BoxGeometry(1, 1, 1)
-    const MCmaterial = new MeshBasicMaterial({
-      map: minecraft
-    })
-    const cubeMC = new Mesh(MCGeometry, MCmaterial)
-    cubeMC.position.set(-3, 0, 0)
-    scene.add(cubeMC)
+    // cubeMaterial.magFilter = NearestFilter
+    // cubeMaterial.minFilter = NearestFilter
 
     // 添加物体
-    const geometry = new BoxGeometry(2, 2, 2)
-    // 基础网格材质
-    // https://threejs.org/docs/index.html#api/zh/materials/MeshBasicMaterial
-    const material = new MeshBasicMaterial({
+    const geometry = new BoxGeometry(2, 2, 2, 200, 200, 200)
+    // 标准网格材质
+    // https://threejs.org/docs/index.html?q=MeshSt#api/zh/materials/MeshStandardMaterial
+    const material = new MeshStandardMaterial({
       color: '#ffee00',
       map: cubeMaterial,
       // 定义此材质是否透明
@@ -92,8 +132,27 @@ export default function index() {
       // aoMap的强度
       aoMapIntensity: 1,
       // 渲染那一面
-      side: DoubleSide
+      side: DoubleSide,
+      // 透明度 需要开启 transparent
       // opacity: 0.5
+      // 置换贴图（位移贴图）
+      // https://threejs.org/docs/index.html?q=dis#api/zh/materials/MeshDistanceMaterial.displacementMap
+      displacementMap: doorHeightTexture,
+      // 位移贴图对网格的影响程度
+      displacementScale: 0.1,
+      // 粗糙度
+      // https://threejs.org/docs/index.html?q=MeshS#api/zh/materials/MeshStandardMaterial.roughness
+      roughness: 1,
+      // 粗糙度贴图
+      roughnessMap: roughnessTexture,
+      // https://threejs.org/docs/index.html?q=MeshS#api/zh/materials/MeshStandardMaterial.metalness
+      // 金属度
+      metalness: 1,
+      //  金属度贴图
+      metalnessMap: metalnessTexture,
+      // 法线特贴图
+      // https://threejs.org/docs/index.html?q=MeshS#api/zh/materials/MeshStandardMaterial.normalMap
+      normalMap: normalTexture
     })
     // 给几何物体添加材质
     const cube = new Mesh(geometry, material)
@@ -106,7 +165,7 @@ export default function index() {
     )
 
     // 添加平面
-    const planeGeometry = new PlaneBufferGeometry(1, 1)
+    const planeGeometry = new PlaneBufferGeometry(1, 1, 200, 200)
     const plane = new Mesh(planeGeometry, material)
     plane.position.set(3, 0, 0)
     scene.add(plane)
@@ -115,6 +174,17 @@ export default function index() {
       'uv2',
       new BufferAttribute(planeGeometry.attributes.uv.array, 2)
     )
+
+    // 灯光
+    // 环境光
+    // https://threejs.org/docs/index.html?q=Amb#api/zh/lights/AmbientLight
+    const light = new AmbientLight('#ffffff', 0.5)
+    scene.add(light)
+    // 平行光
+    // https://threejs.org/docs/index.html?q=light#api/zh/lights/DirectionalLight
+    const directionalLight = new DirectionalLight(0xffffff, 0.5)
+    directionalLight.position.set(0, 10, 10)
+    scene.add(directionalLight)
 
     // 初始化渲染器
     const renderer = new WebGLRenderer()

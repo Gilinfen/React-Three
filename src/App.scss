@@ -5,7 +5,7 @@
   height: 100%;
   justify-content: center;
   align-items: center;
-  filter: drop-shadow(0 0 1rem #454545);
+  filter: drop-shadow(0 0 1rem #525252);
 
   #Box {
     position: relative;
@@ -14,6 +14,15 @@
     background-color: #000000;
     border: solid 5px #272727;
     overflow: auto;
+    .Progress {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      .formatspan{
+        color: #fff;
+      }
+    }
     #icon {
       position: sticky;
       float: right;
@@ -33,9 +42,21 @@
   // 滚动条样式
   // https://www.xuanfengge.com/demo/201311/scroll/css3-scroll.html
   #Box::-webkit-scrollbar-thumb {
+    // background-color: #f90;
+    // background-image: -webkit-linear-gradient(
+    //   90deg,
+    //   rgba(255, 255, 255, 0.2) 25%,
+    //   transparent 25%,
+    //   transparent 50%,
+    //   rgba(255, 255, 255, 0.2) 50%,
+    //   rgba(255, 255, 255, 0.2) 75%,
+    //   transparent 75%,
+    //   transparent
+    // );
+
     background-color: #f90;
     background-image: -webkit-linear-gradient(
-      90deg,
+      45deg,
       rgba(255, 255, 255, 0.2) 25%,
       transparent 25%,
       transparent 50%,
