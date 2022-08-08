@@ -27,7 +27,8 @@ export default function index() {
               />
               <span
                 style={{
-                  marginBottom: '4px'
+                  marginBottom: '4px',
+                  marginLeft: 10
                 }}
                 onClick={() => {
                   navigate(item.code.path, { state: item.code.doc })

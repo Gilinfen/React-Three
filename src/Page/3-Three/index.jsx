@@ -16,10 +16,13 @@ import { CreateDOM } from '../../utils'
 export default function index() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
+    // 获取容器大小
+    const BOX = document.querySelector('#Box').getBoundingClientRect()
+
     // 创建一个场景
     const scene = new Scene()
-    const width = 1190
-    const height = 890
+    const width = BOX.width - 10
+    const height = BOX.height - 10
 
     // 创建相机对象
     const camera = new PerspectiveCamera(75, width / height, 0.1, 1000)

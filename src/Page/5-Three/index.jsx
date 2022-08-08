@@ -10,7 +10,7 @@ import {
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
-import { CreateDOM } from '../../utils'
+import { CreateDOM, resizeChangeFun } from '../../utils'
 
 import { gsap } from 'gsap'
 
@@ -103,19 +103,24 @@ export default function index() {
     render()
 
     // 检测页面大小,更新渲染画面
-    const resizeFun = () => {
-      const BOX = document.querySelector('#Box').getBoundingClientRect()
-      const width = BOX.width - 10
-      const height = BOX.height - 10
-      // 更新摄像头
-      camera.aspect = width / height
-      // 更新摄像机的投影矩阵
-      camera.updateProjectionMatrix()
-      // 更新渲染器
-      renderer.setSize(width, height)
-      // 设置相机渲染的像素比
-      renderer.setPixelRatio(window.devicePixelRatio)
-    }
+    const resizeFun = resizeChangeFun(camera, renderer)
+    // 函数 resizeChangeFun 代码
+    // (camera, renderer) => {
+    //   return () => {
+    //     const BOX = document.querySelector('#Box').getBoundingClientRect()
+    //     const width = BOX.width - 10
+    //     const height = BOX.height - 10
+    //     // 更新摄像头
+    //     camera.aspect = width / height
+    //     // 更新摄像机的投影矩阵
+    //     camera.updateProjectionMatrix()
+    //     // 更新渲染器
+    //     renderer.setSize(width, height)
+    //     // 设置相机渲染的像素比
+    //     renderer.setPixelRatio(window.devicePixelRatio)
+    //   }
+    // }
+
     window.addEventListener('resize', resizeFun)
 
     return () => {
