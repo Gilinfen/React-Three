@@ -40,16 +40,20 @@ export default function index() {
           )}
         />
       </div>
-      <div id="Box" ref={BoxRef}>
+      <div
+        id="Box"
+        ref={BoxRef}
+        // onDoubleClick={() => {
+        //   // 判断是否全屏
+        //   if (document.fullscreenElement) {
+        //     // 就推出全屏
+        //     document.exitFullscreen()
+        //     SetFullscrenn(true)
+        //   }
+        // }}
+      >
         <div
-          style={{
-            position: 'sticky',
-            float: 'right',
-            zIndex: 999,
-            cursor: 'pointer',
-            top: '10px',
-            right: '10px'
-          }}
+          id="icon"
           onClick={() => {
             // 判断是否全屏
             if (!document.fullscreenElement) {

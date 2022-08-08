@@ -8,12 +8,20 @@
   filter: drop-shadow(0 0 1rem #454545);
 
   #Box {
-    position: relative ;
+    position: relative;
     width: 80%;
     height: 95%;
     background-color: #000000;
     border: solid 5px #272727;
     overflow: auto;
+    #icon {
+      position: sticky;
+      float: right;
+      z-index: 999;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
     #Three {
       position: absolute;
       top: 0;
@@ -22,12 +30,35 @@
     }
   }
 
+  // 滚动条样式
+  // https://www.xuanfengge.com/demo/201311/scroll/css3-scroll.html
+  #Box::-webkit-scrollbar-thumb {
+    background-color: #f90;
+    background-image: -webkit-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.2) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.2) 75%,
+      transparent 75%,
+      transparent
+    );
+  }
+  #Box::-webkit-scrollbar {
+    width: 10px;
+    background-color: #f5f5f5;
+  }
+  #Box::-webkit-scrollbar-track {
+    background-color: #f5f5f5;
+  }
   #left {
     width: 15%;
-    height:95%;
+    height: 95%;
     border: solid 5px #272727;
     padding-left: 10px;
     background-color: #272727;
+    overflow: auto;
     h4,
     span {
       color: #fff !important;
