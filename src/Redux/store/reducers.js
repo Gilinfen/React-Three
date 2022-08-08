@@ -1,7 +1,4 @@
-export default function Progress(
-  state = { itemsLoaded: 100, success: true },
-  action
-) {
+export default function Progress(state = { success: true }, action) {
   // 处理各种各样的 action
   switch (action.type) {
     case 'PROGRESS':

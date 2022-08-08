@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect } from 'react'
 import {
   PerspectiveCamera,
@@ -16,12 +17,19 @@ import {
   BufferAttribute
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-
 import { CreateDOM, resizeChangeFun } from '../../utils'
 
+import { useDispatch } from 'react-redux'
+import { PROGRESS } from '../../Redux/store/actions'
+
 export default function index() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(
+      PROGRESS({
+        success: 'T6'
+      })
+    )
     // 获取容器大小
     const BOX = document.querySelector('#Box').getBoundingClientRect()
 
@@ -40,10 +48,14 @@ export default function index() {
     // 导入纹理
     // https://threejs.org/docs/index.html?q=texture#api/zh/textures/Texture
     const textureloader = new TextureLoader()
-    const cubeMaterial = textureloader.load(require('../../assets/color.jpg'))
-    const cubeAlphaMap = textureloader.load(require('../../assets/alpha.jpg'))
+    const cubeMaterial = textureloader.load(
+      require('../../assets/door/color.jpg')
+    )
+    const cubeAlphaMap = textureloader.load(
+      require('../../assets/door/alpha.jpg')
+    )
     const cubeAoMap = textureloader.load(
-      require('../../assets/ambientOcclusion.jpg')
+      require('../../assets/door/ambientOcclusion.jpg')
     )
     const minecraft = textureloader.load(require('../../assets/minecraft.png'))
 

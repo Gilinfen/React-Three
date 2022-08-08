@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect } from 'react'
 import {
   PerspectiveCamera,
@@ -14,10 +14,17 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { CreateDOM } from '../../utils'
 
 import { gsap } from 'gsap'
+import { useDispatch } from 'react-redux'
+import { PROGRESS } from '../../Redux/store/actions'
 
 export default function index() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(
+      PROGRESS({
+        success: 'T4'
+      })
+    )
     // 获取容器大小
     const BOX = document.querySelector('#Box').getBoundingClientRect()
 

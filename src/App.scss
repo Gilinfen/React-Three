@@ -14,15 +14,12 @@
     background-color: #000000;
     border: solid 5px #272727;
     overflow: auto;
-    .Progress {
+    #spin {
       position: absolute;
       top: 50%;
       left: 50%;
       z-index: 9999;
       transform: translate(-50%, -50%);
-      .formatspan{
-        color: #fff;
-      }
     }
     #icon {
       position: sticky;
@@ -37,7 +34,7 @@
       top: 0;
       width: 100%;
       height: 100%;
-      // display: none;
+      display: none;
     }
   }
 
