@@ -21,7 +21,7 @@ import {
   LoadingManager
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { useDispatch} from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import { CreateDOM, resizeChangeFun } from '../../utils'
 import { PROGRESS } from '../../Redux/store/actions'
@@ -50,15 +50,20 @@ export default function index() {
     const enent = {
       onLoad() {
         console.log('加载完成')
+        dispatch(
+          PROGRESS({
+            itemsLoaded: 100,
+            success: true
+          })
+        )
       },
       onProgress(url, itemsLoaded, itemsTotal) {
-        // console.log(url)
-        // console.log(itemsLoaded)
-        // console.log(itemsTotal)
-        dispatch(PROGRESS({
-          itemsLoaded,
-          itemsTotal
-        }))
+        dispatch(
+          PROGRESS({
+            itemsLoaded,
+            success: false
+          })
+        )
         // console.log('加载中')
       },
       onError(url) {

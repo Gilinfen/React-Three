@@ -1,3 +1,5 @@
+import { PROGRESS } from '../Redux/store/actions'
+
 // 创建DOM
 export const CreateDOM = dom => {
   const DOM = document.createElement('div')
