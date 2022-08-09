@@ -22,14 +22,18 @@ import { useDispatch } from 'react-redux'
 import { CreateDOM, resizeChangeFun } from '../../utils'
 import { PROGRESS } from '../../Redux/store/actions'
 
+// 目标：环境贴图与HDR场景
+// 1、物体环境贴图  envMap: emvMapTexture
+// 2、场景背景图  scene.background = emvMapTexture 
+// 3、给所有的物体添加默认的场景贴图 scene.environment = emvMapTexture
+// 4、加载 HDR 环境图 new RGBELoader(loadingMarnger)
+// 5、设置经纬贴图  texture.mapping = EquirectangularReflectionMapping
+// 6、设置场景环境图 scene.background = texture
+// 7、设置物体环境图 scene.environment = texture
+
 export default function index() {
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(
-      PROGRESS({
-        success: true
-      })
-    )
     // 设置纹理管理加载器
     const enent = {
       onLoad() {
@@ -56,6 +60,7 @@ export default function index() {
     // 加载 HDR 环境图
     const rgbEloader = new RGBELoader(loadingMarnger)
     rgbEloader.loadAsync(require('../../assets/hdr/004.hdr')).then(texture => {
+      // 设置经纬贴图
       // texture.mapping
       // https://threejs.org/docs/index.html?q=text#api/zh/textures/Texture.mapping
       // EquirectangularReflectionMapping

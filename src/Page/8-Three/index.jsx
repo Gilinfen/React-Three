@@ -25,16 +25,14 @@ import { useDispatch } from 'react-redux'
 
 import { CreateDOM, resizeChangeFun } from '../../utils'
 import { PROGRESS } from '../../Redux/store/actions'
+// 目标：资源加载进度
+// 1、设置纹理管理加载器  new LoadingManager(enent.onLoad, enent.onProgress, enent.onError)
+// 2、在导入纹理中添加  new TextureLoader(loadingMarnger)
 
 export default function index() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(
-      PROGRESS({
-        success: true
-      })
-    )
     // 获取容器大小
     const BOX = document.querySelector('#Box').getBoundingClientRect()
 

@@ -10,12 +10,15 @@ import {
   FullscreenExitOutlined,
   CheckOutlined
 } from '@ant-design/icons'
+import { PROGRESS } from '../Redux/store/actions'
+import { useDispatch } from 'react-redux'
 
 export default function index() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const BoxRef = useRef(null)
   const [Fullscrenn, SetFullscrenn] = useState(true)
-  const [ProgressFlag, setProgressFlag] = useState(0)
+  const [ProgressFlag, setProgressFlag] = useState(true)
   const { success } = useSelector(state => state)
   // console.log(itemsLoaded);
   // 监测全屏状态
@@ -31,7 +34,7 @@ export default function index() {
 
   // 计算进度条
   useEffect(() => {
-    setProgressFlag(success)
+    setProgressFlag(typeof success === 'string' ? false : success)
     if (!success || typeof success === 'string') {
       // setProgressFlag(true)
       const Three = document.querySelector('#Three')
@@ -53,6 +56,11 @@ export default function index() {
                 title={item.title}
                 onClick={() => {
                   navigate(item.path)
+                  dispatch(
+                    PROGRESS({
+                      success: true
+                    })
+                  )
                 }}
               />
               <span
@@ -109,9 +117,11 @@ export default function index() {
           )}
         </div>
         {/* 进度条 */}
-        <div id="spin">
-          <Spin size="lorge" spinning={ProgressFlag} />
-        </div>
+        {ProgressFlag && (
+          <div id="spin">
+            <Spin size="lorge" spinning={ProgressFlag} />
+          </div>
+        )}
         {/* 路由入口 */}
         <Suspense>
           <Routes>

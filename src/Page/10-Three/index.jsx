@@ -11,13 +11,17 @@ import {
   MeshStandardMaterial,
   AmbientLight,
   DirectionalLight,
-  SphereBufferGeometry
+  SphereBufferGeometry,
+  LoadingManager,
+  EquirectangularReflectionMapping
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useDispatch } from 'react-redux'
 
 import { CreateDOM, resizeChangeFun } from '../../utils'
 import { PROGRESS } from '../../Redux/store/actions'
+// https://threejs.org/docs/index.html?q=text#api/zh/loaders/DataTextureLoader
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 
 // 目标：灯光与阴影
 // 灯光与阴影
@@ -31,6 +35,48 @@ export default function index() {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    dispatch(
+      PROGRESS({
+        success: true
+      })
+    )
+    // 设置纹理管理加载器
+    const enent = {
+      onLoad() {
+        console.log('加载完成')
+        dispatch(
+          PROGRESS({
+            success: false
+          })
+        )
+      },
+      onProgress(url, itemsLoaded, itemsTotal) {
+        // console.log('加载中')
+      },
+      onError(url) {
+        console.log(url)
+        console.log('加载失败')
+      }
+    }
+    const loadingMarnger = new LoadingManager(
+      enent.onLoad,
+      enent.onProgress,
+      enent.onError
+    )
+    // 加载 HDR 环境图
+    const rgbEloader = new RGBELoader(loadingMarnger)
+    rgbEloader.loadAsync(require('../../assets/hdr/012.hdr')).then(texture => {
+      // 设置经纬贴图
+      // texture.mapping
+      // https://threejs.org/docs/index.html?q=text#api/zh/textures/Texture.mapping
+      // EquirectangularReflectionMapping
+      // https://threejs.org/docs/index.html?q=text#api/zh/constants/Textures
+      // texture.mapping = EquirectangularReflectionMapping
+      // // 设置场景环境图
+      // scene.background = texture
+      // // 设置物体环境图
+      // scene.environment = texture
+    })
     // 获取容器大小
     const BOX = document.querySelector('#Box').getBoundingClientRect()
 
@@ -48,6 +94,8 @@ export default function index() {
 
     // 材质
     const material = new MeshStandardMaterial({
+      // metalness: 0.7,
+      // roughness: 0.1,
       side: DoubleSide
     })
     // 条件球体
@@ -61,7 +109,7 @@ export default function index() {
     // 创建平面
     const planeGeometry = new PlaneBufferGeometry(10, 10)
     const plane = new Mesh(planeGeometry, material)
-    plane.position.set(0, -1, 0)
+    plane.position.set(0, -2, 0)
     plane.rotation.x = -Math.PI / 2
     // 接受阴影
     // https://threejs.org/docs/index.html?q=obj#api/zh/core/Object3D.receiveShadow
@@ -76,17 +124,25 @@ export default function index() {
     // 平行光
     // https://threejs.org/docs/index.html?q=light#api/zh/lights/DirectionalLight
     const directionalLight = new DirectionalLight(0xffffff, 0.5)
-    directionalLight.position.set(5, 5, 5)
+    directionalLight.position.set(-3, 5.5, -5)
     // 设置光照投射阴影
     // https://threejs.org/docs/index.html?q=dir#api/zh/lights/DirectionalLight.castShadow
     directionalLight.castShadow = true
-    scene.add(directionalLight)
-
     // https://threejs.org/docs/index.html?q=dir#api/zh/lights/shadows/LightShadow
     // 设置阴影贴图模糊度
     directionalLight.shadow.radius = 20
     // 设置阴影贴图的分辨率
     directionalLight.shadow.mapSize.set(4096, 2048)
+
+    // 设置平行光投射相机的属性
+    directionalLight.shadow.camera.near = 0.5 // 近
+    directionalLight.shadow.camera.far = 500 // 远
+    directionalLight.shadow.camera.top = 5
+    directionalLight.shadow.camera.bottom = -5
+    directionalLight.shadow.camera.left = -5
+    directionalLight.shadow.camera.right = 5
+
+    scene.add(directionalLight)
 
     // 初始化渲染器
     const renderer = new WebGLRenderer()
