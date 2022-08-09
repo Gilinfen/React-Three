@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect } from 'react'
 import {
   PerspectiveCamera,
@@ -8,10 +9,17 @@ import {
   Scene
 } from 'three'
 import { CreateDOM } from '../../utils'
+import { useDispatch } from 'react-redux'
+import { PROGRESS } from '../../Redux/store/actions'
 
 export default function index() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(
+      PROGRESS({
+        success: 'T1'
+      })
+    )
     // 获取容器大小
     const BOX = document.querySelector('#Box').getBoundingClientRect()
 

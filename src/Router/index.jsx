@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { Suspense, useEffect, useRef, useState } from 'react'
 import { Routes, Route, useNavigate, Outlet } from 'react-router-dom'
-import { List, Progress } from 'antd'
+import { List, Progress, Spin } from 'antd'
 import { useSelector } from 'react-redux'
 import routes from './routes'
 import {
@@ -16,7 +16,7 @@ export default function index() {
   const BoxRef = useRef(null)
   const [Fullscrenn, SetFullscrenn] = useState(true)
   const [ProgressFlag, setProgressFlag] = useState(0)
-  const { itemsLoaded, success } = useSelector(state => state)
+  const { success } = useSelector(state => state)
   // console.log(itemsLoaded);
   // 监测全屏状态
   useEffect(() => {
@@ -30,20 +30,14 @@ export default function index() {
   }, [Fullscrenn])
 
   // 计算进度条
-  // useEffect(() => {
-  //   console.log(success)
-  //   if (itemsLoaded) {
-  //     const sum = 100 - 100 / itemsLoaded
-  //     setProgressFlag(() => {
-  //       if (success) return 100
-  //       return sum
-  //     })
-  //   }
-  //   if (success) {
-  //     const Three = document.querySelector('#Three')
-  //     if (Three && Three.style) Three.style.display = 'block'
-  //   }
-  // }, [itemsLoaded, success])
+  useEffect(() => {
+    setProgressFlag(success)
+    if (!success || typeof success === 'string') {
+      // setProgressFlag(true)
+      const Three = document.querySelector('#Three')
+      if (Three && Three.style) Three.style.display = 'block'
+    }
+  }, [success])
 
   return (
     <>
@@ -88,29 +82,6 @@ export default function index() {
         //   }
         // }}
       >
-        {/* 进度条 */}
-        {/* {ProgressFlag != 100 && (
-          <Progress
-            className="Progress"
-            type="circle"
-            strokeColor={{
-              '0%': '#108ee9',
-              '100%': '#87d068'
-            }}
-            percent={ProgressFlag}
-            format={(percent, successPercent) => {
-              return (
-                <>
-                  {percent >= 100 ? (
-                    <CheckOutlined style={{ fontSize: '50px' }} />
-                  ) : (
-                    <span className="formatspan">{percent}%</span>
-                  )}
-                </>
-              )
-            }}
-          />
-        )} */}
         {/* Icon */}
         <div
           id="icon"
@@ -137,8 +108,10 @@ export default function index() {
             />
           )}
         </div>
-        {/* 如果只是内部组件修改，也可以采用<Outlet/>来直接实现 */}
-        <Outlet />
+        {/* 进度条 */}
+        <div id="spin">
+          <Spin size="lorge" spinning={ProgressFlag} />
+        </div>
         {/* 路由入口 */}
         <Suspense>
           <Routes>

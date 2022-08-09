@@ -30,6 +30,11 @@ export default function index() {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    dispatch(
+      PROGRESS({
+        success: true
+      })
+    )
     // 获取容器大小
     const BOX = document.querySelector('#Box').getBoundingClientRect()
 
@@ -52,18 +57,11 @@ export default function index() {
         console.log('加载完成')
         dispatch(
           PROGRESS({
-            itemsLoaded: 100,
-            success: true
+            success: false
           })
         )
       },
       onProgress(url, itemsLoaded, itemsTotal) {
-        dispatch(
-          PROGRESS({
-            itemsLoaded,
-            success: false
-          })
-        )
         // console.log('加载中')
       },
       onError(url) {
@@ -80,26 +78,32 @@ export default function index() {
     // 导入纹理
     // https://threejs.org/docs/index.html?q=texture#api/zh/textures/Texture
     const textureloader = new TextureLoader(loadingMarnger)
-    const cubeMaterial = textureloader.load(require('../../assets/color.jpg'))
-    const cubeAlphaMap = textureloader.load(require('../../assets/alpha.jpg'))
+    const cubeMaterial = textureloader.load(
+      require('../../assets/door/color.jpg')
+    )
+    const cubeAlphaMap = textureloader.load(
+      require('../../assets/door/alpha.jpg')
+    )
     const cubeAoMap = textureloader.load(
-      require('../../assets/ambientOcclusion.jpg')
+      require('../../assets/door/ambientOcclusion.jpg')
     )
 
     // 导入置换贴图（位移贴图）
     const doorHeightTexture = textureloader.load(
-      require('../../assets/height.jpg')
+      require('../../assets/door/height.jpg')
     )
     // 导入粗糙度贴图
     const roughnessTexture = textureloader.load(
-      require('../../assets/roughness.jpg')
+      require('../../assets/door/roughness.jpg')
     )
     // 导入金属贴图
     const metalnessTexture = textureloader.load(
-      require('../../assets/metalness.jpg')
+      require('../../assets/door/metalness.jpg')
     )
     // 导入法线贴图
-    const normalTexture = textureloader.load(require('../../assets/normal.jpg'))
+    const normalTexture = textureloader.load(
+      require('../../assets/door/normal.jpg')
+    )
 
     // 材质属性
     // https://threejs.org/docs/index.html?q=texture#api/zh/constants/Textures
@@ -153,7 +157,7 @@ export default function index() {
       // https://threejs.org/docs/index.html?q=MeshS#api/zh/materials/MeshStandardMaterial.metalness
       // 金属度
       metalness: 1,
-      //  金属度贴图
+      // 金属度贴图
       metalnessMap: metalnessTexture,
       // 法线特贴图
       // https://threejs.org/docs/index.html?q=MeshS#api/zh/materials/MeshStandardMaterial.normalMap

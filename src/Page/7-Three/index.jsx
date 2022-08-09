@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect } from 'react'
 import {
   PerspectiveCamera,
@@ -19,12 +20,19 @@ import {
   DirectionalLight
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { useDispatch } from 'react-redux'
 
+import { PROGRESS } from '../../Redux/store/actions'
 import { CreateDOM, resizeChangeFun } from '../../utils'
 
 export default function index() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(
+      PROGRESS({
+        success: 'T7'
+      })
+    )
     // 获取容器大小
     const BOX = document.querySelector('#Box').getBoundingClientRect()
 
@@ -43,26 +51,32 @@ export default function index() {
     // 导入纹理
     // https://threejs.org/docs/index.html?q=texture#api/zh/textures/Texture
     const cubeGeometry = new TextureLoader()
-    const cubeMaterial = cubeGeometry.load(require('../../assets/color.jpg'))
-    const cubeAlphaMap = cubeGeometry.load(require('../../assets/alpha.jpg'))
+    const cubeMaterial = cubeGeometry.load(
+      require('../../assets/door/color.jpg')
+    )
+    const cubeAlphaMap = cubeGeometry.load(
+      require('../../assets/door/alpha.jpg')
+    )
     const cubeAoMap = cubeGeometry.load(
-      require('../../assets/ambientOcclusion.jpg')
+      require('../../assets/door/ambientOcclusion.jpg')
     )
 
     // 导入置换贴图（位移贴图）
     const doorHeightTexture = cubeGeometry.load(
-      require('../../assets/height.jpg')
+      require('../../assets/door/height.jpg')
     )
     // 导入粗糙度贴图
     const roughnessTexture = cubeGeometry.load(
-      require('../../assets/roughness.jpg')
+      require('../../assets/door/roughness.jpg')
     )
     // 导入金属贴图
     const metalnessTexture = cubeGeometry.load(
-      require('../../assets/metalness.jpg')
+      require('../../assets/door/metalness.jpg')
     )
     // 导入法线贴图
-    const normalTexture = cubeGeometry.load(require('../../assets/normal.jpg'))
+    const normalTexture = cubeGeometry.load(
+      require('../../assets/door/normal.jpg')
+    )
 
     // 材质属性
     // https://threejs.org/docs/index.html?q=texture#api/zh/constants/Textures
