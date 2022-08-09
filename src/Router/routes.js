@@ -123,6 +123,16 @@ const obj = [
       doc: require('../Docs/Three_12.md'),
       component: MarKdown
     }
+  },
+  {
+    title: '13、 水面小岛',
+    path: '/three_13',
+    component: lazy(() => import('../Page/13-Three')),
+    code: {
+      path: '/three_13/doc_13',
+      doc: require('../Docs/Three_13.md'),
+      component: MarKdown
+    }
   }
 ]
 
