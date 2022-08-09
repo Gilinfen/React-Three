@@ -83,6 +83,16 @@ const obj = [
       doc: require('../Docs/Three_8.md'),
       component: MarKdown
     }
+  },
+  {
+    title: '10、 灯光与阴影',
+    path: '/three_10',
+    component: lazy(() => import('../Page/10-Three')),
+    code: {
+      path: '/three_10/doc_10',
+      doc: require('../Docs/Three_10.md'),
+      component: MarKdown
+    }
   }
 ]
 
