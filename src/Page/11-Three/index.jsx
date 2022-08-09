@@ -13,7 +13,8 @@ import {
   DirectionalLight,
   SphereBufferGeometry,
   LoadingManager,
-  EquirectangularReflectionMapping
+  EquirectangularReflectionMapping,
+  SpotLight
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useDispatch } from 'react-redux'
@@ -22,20 +23,37 @@ import { CreateDOM, resizeChangeFun } from '../../utils'
 import { PROGRESS } from '../../Redux/store/actions'
 // https://threejs.org/docs/index.html?q=text#api/zh/loaders/DataTextureLoader
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
-import * as dat from 'dat.gui';
-// 目标：灯光与阴影
-// 灯光与阴影
-// 1、材质要满足能够对光照有反应
-// 2、设置渲染器开启阴影的计算 renderer.shadowMap.enadbled = true
-// 3、设置光照投射阴影 directionalLight.castShadow = true
-// 4、设置物体投射阴影 sphere.castShadow = true
-// 5、设置物体接受阴影 plane.receiveShadow = true
+// https://juejin.cn/post/7111988285722853389
+import * as dat from 'dat.gui'
+
+// 目标：聚光灯
 
 export default function index() {
   const dispatch = useDispatch()
-
   useEffect(() => {
+    // 创建 gui 面板
     const gui = new dat.GUI()
+    dispatch(
+      PROGRESS({
+        success: true
+      })
+    )
+
+    // 获取容器大小
+    const BOX = document.querySelector('#Box').getBoundingClientRect()
+
+    // 创建一个场景
+    const scene = new Scene()
+    const width = BOX.width - 10
+    const height = BOX.height - 10
+
+    // 创建相机对象
+    const camera = new PerspectiveCamera(75, width / height, 0.1, 1000)
+
+    // 设置相机位置
+    camera.position.set(0, 0, 10)
+    scene.add(camera)
+
     // 设置纹理管理加载器
     const enent = {
       onLoad() {
@@ -73,20 +91,6 @@ export default function index() {
       // // 设置物体环境图
       scene.environment = texture
     })
-    // 获取容器大小
-    const BOX = document.querySelector('#Box').getBoundingClientRect()
-
-    // 创建一个场景
-    const scene = new Scene()
-    const width = BOX.width - 10
-    const height = BOX.height - 10
-
-    // 创建相机对象
-    const camera = new PerspectiveCamera(75, width / height, 0.1, 1000)
-
-    // 设置相机位置
-    camera.position.set(0, 0, 10)
-    scene.add(camera)
 
     // 材质
     const material = new MeshStandardMaterial({
@@ -103,7 +107,7 @@ export default function index() {
     scene.add(sphere)
 
     // 创建平面
-    const planeGeometry = new PlaneBufferGeometry(10, 10)
+    const planeGeometry = new PlaneBufferGeometry(30, 30)
     const plane = new Mesh(planeGeometry, material)
     plane.position.set(0, -2, 0)
     plane.rotation.x = -Math.PI / 2
@@ -117,29 +121,45 @@ export default function index() {
     // https://threejs.org/docs/index.html?q=Amb#api/zh/lights/AmbientLight
     const light = new AmbientLight('#ffffff', 0.5)
     scene.add(light)
-    // 平行光
-    // https://threejs.org/docs/index.html?q=light#api/zh/lights/DirectionalLight
-    const directionalLight = new DirectionalLight(0xffffff, 0.5)
-    directionalLight.position.set(-3, 5.5, -5)
+    // 透视光（聚光灯）
+    // https://threejs.org/docs/index.html?q=light#api/zh/lights/SpotLight
+    const soptLight = new SpotLight(0xffffff, 1)
+    soptLight.position.set(-3, 5.5, -5)
     // 设置光照投射阴影
-    // https://threejs.org/docs/index.html?q=dir#api/zh/lights/DirectionalLight.castShadow
-    directionalLight.castShadow = true
+    // https://threejs.org/docs/index.html?q=dir#api/zh/lights/SpotLight.castShadow
+    soptLight.castShadow = true
     // https://threejs.org/docs/index.html?q=dir#api/zh/lights/shadows/LightShadow
     // 设置阴影贴图模糊度
-    directionalLight.shadow.radius = 20
+    soptLight.shadow.radius = 20
     // 设置阴影贴图的分辨率
-    directionalLight.shadow.mapSize.set(4096, 2048)
+    soptLight.shadow.mapSize.set(4096, 2048)
+    // 透视大小
+    soptLight.angle = Math.PI / 6
+    // 聚焦某个物体
+    soptLight.target = sphere
+    // 光线衰减
+    soptLight.distance = 0
+    // 聚光锥的半影衰减百分比
+    soptLight.penumbra = 0
+    // 沿着光照距离的衰减量 需要开启 physicallyCorrectLights
+    // https://threejs.org/docs/index.html?q=light#api/zh/renderers/WebGLRenderer.physicallyCorrectLights
+    soptLight.decay = 0
 
-    // 设置平行光投射相机的属性
-    directionalLight.shadow.camera.near = 0.5 // 近
-    directionalLight.shadow.camera.far = 500 // 远
-    directionalLight.shadow.camera.top = 5
-    directionalLight.shadow.camera.bottom = -5
-    directionalLight.shadow.camera.left = -5
-    directionalLight.shadow.camera.right = 5
+    // 设置透视相机的属性
 
-    scene.add(directionalLight)
-    gui.add(sphere.position,'y').min(-5).max(5).step(0.1).name('球体y轴位置')
+    scene.add(soptLight)
+
+    // GUI 面板
+    gui.add(sphere.position, 'x').min(-5).max(5).step(0.1).name('球体x轴位置')
+    gui
+      .add(soptLight, 'angle')
+      .min(0)
+      .max(Math.PI / 2)
+      .step(0.01)
+      .name('透视大小')
+    gui.add(soptLight, 'distance').min(0).max(50).step(0.1).name('光线衰减')
+    gui.add(soptLight, 'penumbra').min(0).max(1).step(0.01).name('半影衰减')
+    gui.add(soptLight, 'decay').min(0).max(5).step(0.1).name('光照距离衰减量')
 
     // 初始化渲染器
     const renderer = new WebGLRenderer()
@@ -149,6 +169,8 @@ export default function index() {
     // 开启厂家中的阴影贴图
     // https://threejs.org/docs/index.html?q=renderer#api/zh/renderers/WebGLRenderer.shadowMap
     renderer.shadowMap.enabled = true
+    // 开启物理上正确的光照模式
+    renderer.physicallyCorrectLights = true
 
     // 添加到页面中
     CreateDOM(renderer.domElement)

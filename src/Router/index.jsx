@@ -70,6 +70,7 @@ export default function index() {
                 }}
                 onClick={() => {
                   navigate(item.code.path, { state: item.code.doc })
+                  setProgressFlag(false)
                 }}
               >
                 源码
