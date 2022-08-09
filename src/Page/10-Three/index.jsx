@@ -22,7 +22,7 @@ import { CreateDOM, resizeChangeFun } from '../../utils'
 import { PROGRESS } from '../../Redux/store/actions'
 // https://threejs.org/docs/index.html?q=text#api/zh/loaders/DataTextureLoader
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
-import * as dat from 'dat.gui';
+import * as dat from 'dat.gui'
 // 目标：灯光与阴影
 // 灯光与阴影
 // 1、材质要满足能够对光照有反应
@@ -67,11 +67,11 @@ export default function index() {
       // https://threejs.org/docs/index.html?q=text#api/zh/textures/Texture.mapping
       // EquirectangularReflectionMapping
       // https://threejs.org/docs/index.html?q=text#api/zh/constants/Textures
-      texture.mapping = EquirectangularReflectionMapping
+      // texture.mapping = EquirectangularReflectionMapping
       // // 设置场景环境图
-      scene.background = texture
+      // scene.background = texture
       // // 设置物体环境图
-      scene.environment = texture
+      // scene.environment = texture
     })
     // 获取容器大小
     const BOX = document.querySelector('#Box').getBoundingClientRect()
@@ -90,8 +90,8 @@ export default function index() {
 
     // 材质
     const material = new MeshStandardMaterial({
-      metalness: 0.7,
-      roughness: 0.1,
+      // metalness: 0.7,
+      // roughness: 0.1,
       side: DoubleSide
     })
     // 条件球体
@@ -139,7 +139,7 @@ export default function index() {
     directionalLight.shadow.camera.right = 5
 
     scene.add(directionalLight)
-    gui.add(sphere.position,'y').min(-5).max(5).step(0.1).name('球体y轴位置')
+    gui.add(sphere.position, 'y').min(-5).max(5).step(0.1).name('球体y轴位置')
 
     // 初始化渲染器
     const renderer = new WebGLRenderer()

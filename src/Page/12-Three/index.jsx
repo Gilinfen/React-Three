@@ -14,7 +14,10 @@ import {
   SphereBufferGeometry,
   LoadingManager,
   EquirectangularReflectionMapping,
-  SpotLight
+  SpotLight,
+  PointLight,
+  MeshBasicMaterial,
+  Clock
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useDispatch } from 'react-redux'
@@ -80,17 +83,17 @@ export default function index() {
       // https://threejs.org/docs/index.html?q=text#api/zh/textures/Texture.mapping
       // EquirectangularReflectionMapping
       // https://threejs.org/docs/index.html?q=text#api/zh/constants/Textures
-      texture.mapping = EquirectangularReflectionMapping
+      // texture.mapping = EquirectangularReflectionMapping
       // // 设置场景环境图
-      scene.background = texture
+      // scene.background = texture
       // // 设置物体环境图
-      scene.environment = texture
+      // scene.environment = texture
     })
 
     // 材质
     const material = new MeshStandardMaterial({
-      metalness: 0.7,
-      roughness: 0.1,
+      // metalness: 0.7,
+      // roughness: 0.1,
       side: DoubleSide
     })
     // 条件球体
@@ -116,45 +119,35 @@ export default function index() {
     // https://threejs.org/docs/index.html?q=Amb#api/zh/lights/AmbientLight
     const light = new AmbientLight('#ffffff', 0.5)
     scene.add(light)
-    // 透视光（聚光灯）
+
+    // 添加光源求
+    const smallBall = new Mesh(
+      new SphereBufferGeometry(0.1, 20, 20),
+      new MeshBasicMaterial({ color: 'red' })
+    )
+    smallBall.position.set(2, 2, 2)
+
+    // 点光源
     // https://threejs.org/docs/index.html?q=light#api/zh/lights/SpotLight
-    const soptLight = new SpotLight(0xffffff, 1)
-    soptLight.position.set(-3, 5.5, -5)
+    const pointLight = new PointLight('red', 1)
+    pointLight.position.set(2, 2, 2)
     // 设置光照投射阴影
     // https://threejs.org/docs/index.html?q=dir#api/zh/lights/SpotLight.castShadow
-    soptLight.castShadow = true
+    pointLight.castShadow = true
     // https://threejs.org/docs/index.html?q=dir#api/zh/lights/shadows/LightShadow
     // 设置阴影贴图模糊度
-    soptLight.shadow.radius = 20
+    pointLight.shadow.radius = 20
     // 设置阴影贴图的分辨率
-    soptLight.shadow.mapSize.set(4096, 2048)
-    // 透视大小
-    soptLight.angle = Math.PI / 6
-    // 聚焦某个物体
-    soptLight.target = sphere
-    // 光线衰减
-    soptLight.distance = 0
-    // 聚光锥的半影衰减百分比
-    soptLight.penumbra = 0
-    // 沿着光照距离的衰减量 需要开启 physicallyCorrectLights
-    // https://threejs.org/docs/index.html?q=light#api/zh/renderers/WebGLRenderer.physicallyCorrectLights
-    soptLight.decay = 0
+    pointLight.shadow.mapSize.set(512, 512)
 
-    // 设置透视相机的属性
-
-    scene.add(soptLight)
+    //
+    smallBall.add(pointLight)
+    scene.add(smallBall)
 
     // GUI 面板
-    gui.add(sphere.position, 'x').min(-5).max(5).step(0.1).name('球体x轴位置')
-    gui
-      .add(soptLight, 'angle')
-      .min(0)
-      .max(Math.PI / 2)
-      .step(0.01)
-      .name('透视大小')
-    gui.add(soptLight, 'distance').min(0).max(50).step(0.1).name('光线衰减')
-    gui.add(soptLight, 'penumbra').min(0).max(1).step(0.01).name('半影衰减')
-    gui.add(soptLight, 'decay').min(0).max(5).step(0.1).name('光照距离衰减量')
+    gui.add(sphere.position, 'y').min(-5).max(5).step(0.1).name('球体x轴位置')
+    gui.add(pointLight, 'distance').min(0).max(50).step(0.1).name('光线衰减')
+    gui.add(pointLight, 'decay').min(0).max(5).step(0.1).name('光照距离衰减量')
 
     // 初始化渲染器
     const renderer = new WebGLRenderer()
@@ -182,8 +175,15 @@ export default function index() {
     const axesHelper = new AxesHelper(5)
     scene.add(axesHelper)
 
+    // 设置时钟
+    const clock = new Clock()
+
     // 利用动画函数不停的渲染页面
     function render() {
+      let item = clock.getElapsedTime()
+      smallBall.position.x = Math.sin(item) * 3
+      smallBall.position.z = Math.cos(item) * 3
+      smallBall.position.y = 2 + Math.sin(item * 0.5)
       controls.update()
       renderer.render(scene, camera)
       // 渲染下一针的时候就会重新调用

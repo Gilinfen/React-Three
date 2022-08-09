@@ -78,14 +78,14 @@ export default function index() {
 
     // 导入环境贴图
     const cubeTextureLoader = new CubeTextureLoader()
-    const emvMapTexture = cubeTextureLoader.load([
-      require('../../assets/environmentMaps/0/px.jpg'),
-      require('../../assets/environmentMaps/0/nx.jpg'),
-      require('../../assets/environmentMaps/0/py.jpg'),
-      require('../../assets/environmentMaps/0/ny.jpg'),
-      require('../../assets/environmentMaps/0/pz.jpg'),
-      require('../../assets/environmentMaps/0/nz.jpg')
-    ])
+    // const emvMapTexture = cubeTextureLoader.load([
+    //   require('../../assets/environmentMaps/0/px.jpg'),
+    //   require('../../assets/environmentMaps/0/nx.jpg'),
+    //   require('../../assets/environmentMaps/0/py.jpg'),
+    //   require('../../assets/environmentMaps/0/ny.jpg'),
+    //   require('../../assets/environmentMaps/0/pz.jpg'),
+    //   require('../../assets/environmentMaps/0/nz.jpg')
+    // ])
 
     // 添加球体
     const sphereGemoetry = new SphereBufferGeometry(1, 20, 20)

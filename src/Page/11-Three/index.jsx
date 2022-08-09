@@ -80,17 +80,17 @@ export default function index() {
       // https://threejs.org/docs/index.html?q=text#api/zh/textures/Texture.mapping
       // EquirectangularReflectionMapping
       // https://threejs.org/docs/index.html?q=text#api/zh/constants/Textures
-      texture.mapping = EquirectangularReflectionMapping
+      // texture.mapping = EquirectangularReflectionMapping
       // // 设置场景环境图
-      scene.background = texture
+      // scene.background = texture
       // // 设置物体环境图
-      scene.environment = texture
+      // scene.environment = texture
     })
 
     // 材质
     const material = new MeshStandardMaterial({
-      metalness: 0.7,
-      roughness: 0.1,
+      // metalness: 0.7,
+      // roughness: 0.1,
       side: DoubleSide
     })
     // 条件球体
@@ -139,8 +139,6 @@ export default function index() {
     // 沿着光照距离的衰减量 需要开启 physicallyCorrectLights
     // https://threejs.org/docs/index.html?q=light#api/zh/renderers/WebGLRenderer.physicallyCorrectLights
     soptLight.decay = 0
-
-    // 设置透视相机的属性
 
     scene.add(soptLight)
 
