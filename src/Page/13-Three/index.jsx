@@ -42,6 +42,11 @@ export default function index() {
   const dispatch = useDispatch()
   const ResizeRef = useRef({})
   useEffect(() => {
+    dispatch(
+      PROGRESS({
+        success: '13'
+      })
+    )
     // 初始化场景
     const { camera, scene, renderer, controls } = InitScene()
 
@@ -65,10 +70,10 @@ export default function index() {
     const height = BOX.height - 10
 
     // 创建相机对象
-    const camera = new PerspectiveCamera(75, width / height, 0.1, 2000)
+    const camera = new PerspectiveCamera(75, width / height, 0.1, 1000)
 
     // 设置相机位置
-    camera.position.set(-50, -50, 130)
+    camera.position.set(0, 0, 10)
     // 更新摄像机的头宽高比
     camera.aspect = width / height
     // 更新摄像机投影矩阵
