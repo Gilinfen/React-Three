@@ -125,7 +125,7 @@ const obj = [
     }
   },
   {
-    title: '13、 水面小岛',
+    title: '13、 水面',
     path: '/three_13',
     component: lazy(() => import('../Page/13-Three')),
     code: {

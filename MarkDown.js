@@ -4,11 +4,11 @@ const path = require('path')
 const os = require('os')
 
 // 判断系统
-if (os.type() == 'Windows_NT') {
+if (os.type() === 'Windows_NT') {
   //windows
-} else if (os.type() == 'Darwin') {
+} else if (os.type() === 'Darwin') {
   //mac
-} else if (os.type() == 'Linux') {
+} else if (os.type() === 'Linux') {
   //Linux
 }
 // 创建文件夹

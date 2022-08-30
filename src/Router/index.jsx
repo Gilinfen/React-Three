@@ -33,6 +33,8 @@ export default function index() {
   useEffect(() => {
     if (/doc_/gi.test(location.pathname)) {
       setProgressFlag(false)
+    } else if (location.pathname === '/') {
+      setProgressFlag(false)
     } else {
       setProgressFlag(typeof success === 'string' ? false : success)
     }
