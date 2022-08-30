@@ -1,20 +1,17 @@
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { Suspense, useEffect, useRef, useState } from 'react'
-import { Routes, Route, useNavigate, Outlet } from 'react-router-dom'
-import { List, Progress, Spin } from 'antd'
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+import { List, Spin } from 'antd'
 import { useSelector } from 'react-redux'
 import routes from './routes'
-import {
-  FullscreenOutlined,
-  FullscreenExitOutlined,
-  CheckOutlined
-} from '@ant-design/icons'
+import { FullscreenOutlined, FullscreenExitOutlined } from '@ant-design/icons'
 import { PROGRESS } from '../Redux/store/actions'
 import { useDispatch } from 'react-redux'
 
 export default function index() {
   const navigate = useNavigate()
+  const location = useLocation()
   const dispatch = useDispatch()
   const BoxRef = useRef(null)
   const [Fullscrenn, SetFullscrenn] = useState(true)
@@ -34,7 +31,11 @@ export default function index() {
 
   // 计算进度条
   useEffect(() => {
-    setProgressFlag(typeof success === 'string' ? false : success)
+    if (/doc_/gi.test(location.pathname)) {
+      setProgressFlag(false)
+    } else {
+      setProgressFlag(typeof success === 'string' ? false : success)
+    }
     if (!success || typeof success === 'string') {
       // setProgressFlag(true)
       const Three = document.querySelector('#Three')
@@ -56,11 +57,13 @@ export default function index() {
                 title={item.title}
                 onClick={() => {
                   navigate(item.path)
-                  dispatch(
-                    PROGRESS({
-                      success: true
-                    })
-                  )
+                  if (location.pathname !== item.path) {
+                    dispatch(
+                      PROGRESS({
+                        success: true
+                      })
+                    )
+                  }
                 }}
               />
               <span

@@ -36,8 +36,6 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 import * as dat from 'dat.gui'
 import { Water } from 'three/examples/jsm/objects/Water2'
 
-// 目标：聚光灯
-
 export default function index() {
   const dispatch = useDispatch()
   const ResizeRef = useRef({})
