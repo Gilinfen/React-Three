@@ -7,37 +7,22 @@ import {
   Mesh,
   Scene,
   AxesHelper,
-  DoubleSide,
-  PlaneBufferGeometry,
   MeshStandardMaterial,
-  AmbientLight,
-  DirectionalLight,
-  SphereBufferGeometry,
   LoadingManager,
-  EquirectangularReflectionMapping,
-  SpotLight,
-  PointLight,
-  MeshBasicMaterial,
-  Clock,
-  SphereGeometry,
-  CubeTextureLoader,
   TextureLoader,
-  CircleBufferGeometry,
-  Vector2,
   PlaneGeometry,
   RepeatWrapping,
   Vector3,
   ACESFilmicToneMapping,
   BoxGeometry,
-  PMREMGenerator
+  PMREMGenerator,
+  MathUtils
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useDispatch } from 'react-redux'
 
 import { CreateDOM, resizeChangeFun } from '../../utils'
 import { PROGRESS } from '../../Redux/store/actions'
-// https://threejs.org/docs/index.html?q=text#api/zh/loaders/DataTextureLoader
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 // https://juejin.cn/post/7111988285722853389
 import * as dat from 'dat.gui'
 import { Water } from 'three/examples/jsm/objects/Water.js'
@@ -48,6 +33,12 @@ export default function index() {
   const dispatch = useDispatch()
   const ResizeRef = useRef({})
   useEffect(() => {
+    // 太阳参数
+    const sumParams = {
+      elevation: 2, // 极角     theta 角   纬度
+      azimuth: -150 // 方位角    phi 角度   经度
+    }
+
     // 初始化场景
     const { camera, scene, renderer, controls, paramGenerator } = InitScene()
 
@@ -55,16 +46,24 @@ export default function index() {
     const LoadingManager = LoadingManagerFun()
 
     // 场景
-    const { water, sky, cube } = initVater(LoadingManager, paramGenerator)
+    const { water, sky, cube, sun } = initVater(LoadingManager, paramGenerator)
+
     // 水面
     scene.add(water)
+
     // 天空
     scene.add(sky)
+
     // cobe盒子
     scene.add(cube)
 
+    // gui面板
+    guiFun({ sun, sky, paramGenerator, scene, sumParams }, { water })
+    // 初始化渲染太阳
+    sunUpdateOnchonge({ sun, sky, paramGenerator, scene, sumParams })
+
     // 渲染
-    render({ controls, renderer, scene, camera }, water)
+    render({ controls, renderer, scene, camera }, water, cube)
     return () => {
       window.removeEventListener('resize', ResizeRef.current?.resizeFun)
       const Element = document.querySelector('#Three')
@@ -73,6 +72,49 @@ export default function index() {
       ElementGUI?.parentElement.removeChild(ElementGUI)
     }
   }, [])
+
+  // 调试器
+  function guiFun({ sun, sky, paramGenerator, scene, sumParams }, { water }) {
+    // 创建 gui 面板
+    const gui = new dat.GUI()
+    gui
+      .add(sumParams, 'elevation')
+      .min(0)
+      .max(90)
+      .step(0.05)
+      .name('太阳elevation')
+      .onChange(() =>
+        sunUpdateOnchonge({ sun, sky, paramGenerator, scene, sumParams })
+      )
+    gui
+      .add(sumParams, 'azimuth')
+      .min(-100)
+      .max(100)
+      .step(0.1)
+      .name('太阳azimuth')
+      .onChange(() =>
+        sunUpdateOnchonge({ sun, sky, paramGenerator, scene, sumParams })
+      )
+
+    // 设置水面
+    gui
+      .add(water.material.uniforms.distortionScale, 'value', 0, 40, 0.1)
+      .name('水面饱和度')
+      gui
+      .add(water.material.uniforms.size, 'value', 0.1, 20, 0.1)
+      .name('水面大小')
+  }
+
+  // 太阳移动方法
+  function sunUpdateOnchonge({ sun, sky, paramGenerator, scene, sumParams }) {
+    const theta = MathUtils.degToRad(90 - sumParams.elevation) // 极角
+    const phi = MathUtils.degToRad(sumParams.azimuth) // 方位角
+    sun.setFromSphericalCoords(1, theta, phi)
+    sky.material.uniforms['sunPosition'].value.copy(sun)
+    // 给盒子设置环境光源
+    const renderTarget = paramGenerator.fromScene(sky)
+    scene.environment = renderTarget.texture
+  }
 
   // 初始化场景
   function InitScene() {
@@ -102,6 +144,7 @@ export default function index() {
     // 太阳的渲染设置
     renderer.toneMapping = ACESFilmicToneMapping
 
+    // https://threejs.org/docs/index.html?q=PMREMGenerator#api/zh/extras/PMREMGenerator
     const paramGenerator = new PMREMGenerator(renderer)
 
     // 添加到页面中
@@ -161,20 +204,23 @@ export default function index() {
     // 天空场景
     const sky = new Sky()
     sky.scale.setScalar(10000)
-    sky.material.uniforms['sunPosition'].value.copy(sun)
-
-    //
 
     // cube 盒子
     const cube = new Mesh(
       new BoxGeometry(30, 30, 30),
       new MeshStandardMaterial()
     )
-    return { water, sky, cube }
+    return { water, sky, cube, sun }
   }
 
   // 利用动画函数不停的渲染页面
-  function render({ controls, renderer, scene, camera }, water) {
+  function render({ controls, renderer, scene, camera }, water, cube) {
+    // 盒子震动
+    const time = window.performance.now() * 0.001
+    cube.position.y = Math.sin(time) * 20 + 5
+    cube.rotation.x = time * 0.5
+    cube.rotation.z = time * 0.5
+
     // 水面波动
     water.material.uniforms['time'].value += 1 / 60
 
@@ -182,7 +228,7 @@ export default function index() {
     renderer.render(scene, camera)
     // 渲染下一针的时候就会重新调用
     requestAnimationFrame(() =>
-      render({ controls, renderer, scene, camera }, water)
+      render({ controls, renderer, scene, camera }, water, cube)
     )
   }
 

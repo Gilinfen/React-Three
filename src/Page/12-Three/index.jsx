@@ -10,11 +10,8 @@ import {
   PlaneBufferGeometry,
   MeshStandardMaterial,
   AmbientLight,
-  DirectionalLight,
   SphereBufferGeometry,
   LoadingManager,
-  EquirectangularReflectionMapping,
-  SpotLight,
   PointLight,
   MeshBasicMaterial,
   Clock

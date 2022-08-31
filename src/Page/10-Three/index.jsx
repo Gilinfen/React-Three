@@ -13,7 +13,6 @@ import {
   DirectionalLight,
   SphereBufferGeometry,
   LoadingManager,
-  EquirectangularReflectionMapping
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useDispatch } from 'react-redux'
